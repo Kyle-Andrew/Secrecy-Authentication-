@@ -3,6 +3,8 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
+const md5 = require("md5");
+
 const User = require("../models/User");
 
 router
@@ -16,7 +18,7 @@ router
     try {
       const newUser = new User({
         username: req.body.username,
-        password: req.body.password,
+        password: md5(req.body.password),
       });
 
       await newUser.save();

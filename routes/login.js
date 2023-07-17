@@ -3,6 +3,8 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
+const md5 = require("md5");
+
 const User = require("../models/User");
 
 router
@@ -13,11 +15,14 @@ router
   })
 
   .post(async (req, res) => {
+    const username = req.body.username;
+    const password = md5(req.body.password);
+
     try {
-      const loginAttempt = await User.findOne({ username: req.body.username });
+      const loginAttempt = await User.findOne({ username: username });
 
       if (loginAttempt) {
-        if (loginAttempt.password === req.body.password) {
+        if (loginAttempt.password === password) {
           res.render("secrets");
         } else {
           res.json({ message: "Username and Password do not match." });
