@@ -3,9 +3,9 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
-const md5 = require("md5");
-
 const User = require("../models/User");
+
+const bcrypt = require("bcrypt");
 
 router
   .route("/")
@@ -16,17 +16,19 @@ router
 
   .post(async (req, res) => {
     const username = req.body.username;
-    const password = md5(req.body.password);
+    const password = req.body.password;
 
     try {
       const loginAttempt = await User.findOne({ username: username });
 
       if (loginAttempt) {
-        if (loginAttempt.password === password) {
-          res.render("secrets");
-        } else {
-          res.json({ message: "Username and Password do not match." });
-        }
+        bcrypt.compare(password, loginAttempt.password).then((compareMatch) => {
+          if (compareMatch) {
+            res.render("secrets");
+          } else {
+            res.json({ message: "Username and Password do not match." });
+          }
+        });
       } else {
         res.json({ message: "No user found with that username." });
       }

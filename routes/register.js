@@ -3,9 +3,10 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
-const md5 = require("md5");
-
 const User = require("../models/User");
+
+const bcrypt = require("bcrypt");
+const saltRouounds = 10;
 
 router
   .route("/")
@@ -18,7 +19,7 @@ router
     try {
       const newUser = new User({
         username: req.body.username,
-        password: md5(req.body.password),
+        password: await bcrypt.hash(req.body.password, saltRouounds),
       });
 
       await newUser.save();
