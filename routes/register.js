@@ -22,7 +22,7 @@ router
       await newUser.save();
       res.redirect("/login");
     } catch (err) {
-      res.status(err.status).json({ message: err.message });
+      res.json({ message: err.message });
     }
   });
 

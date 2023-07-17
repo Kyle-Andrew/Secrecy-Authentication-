@@ -26,7 +26,7 @@ router
         res.json({ message: "No user found with that username." });
       }
     } catch (err) {
-      res.status(err.status).json({ message: err.message });
+      res.json({ message: err.message });
     }
   });
 
