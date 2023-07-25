@@ -3,38 +3,22 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
-const User = require("../models/User");
+const allowUnauthenticatedUsers = require("../authentication-checks/allowUnauthenticatedUsers");
 
-const bcrypt = require("bcrypt");
+const passport = require("passport");
 
 router
   .route("/")
 
-  .get((req, res) => {
+  .get(allowUnauthenticatedUsers, (req, res) => {
     res.render("login");
   })
 
-  .post(async (req, res) => {
-    const username = req.body.username;
-    const password = req.body.password;
-
-    try {
-      const loginAttempt = await User.findOne({ username: username });
-
-      if (loginAttempt) {
-        bcrypt.compare(password, loginAttempt.password).then((compareMatch) => {
-          if (compareMatch) {
-            res.render("secrets");
-          } else {
-            res.json({ message: "Username and Password do not match." });
-          }
-        });
-      } else {
-        res.json({ message: "No user found with that username." });
-      }
-    } catch (err) {
-      res.json({ message: err.message });
-    }
-  });
+  .post(
+    passport.authenticate("local", {
+      successRedirect: "/secrets",
+      failureRedirect: "/login",
+    })
+  );
 
 module.exports = router;

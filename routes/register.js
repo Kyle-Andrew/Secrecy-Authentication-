@@ -3,26 +3,25 @@ const router = express.Router();
 
 router.use(express.urlencoded({ extended: true }));
 
+const allowUnauthenticatedUsers = require("../authentication-checks/allowUnauthenticatedUsers");
+
 const User = require("../models/User");
 
 const bcrypt = require("bcrypt");
-const saltRouounds = 10;
 
 router
   .route("/")
 
-  .get((req, res) => {
+  .get(allowUnauthenticatedUsers, (req, res) => {
     res.render("register");
   })
 
   .post(async (req, res) => {
     try {
-      const newUser = new User({
-        username: req.body.username,
-        password: await bcrypt.hash(req.body.password, saltRouounds),
-      });
+      const username = req.body.username;
+      const password = await bcrypt.hash(req.body.password, 10);
 
-      await newUser.save();
+      await User.create({ username: username, password: password });
       res.redirect("/login");
     } catch (err) {
       res.json({ message: err.message });
