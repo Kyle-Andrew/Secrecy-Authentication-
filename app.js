@@ -40,6 +40,9 @@ app.use("/secrets", secretsRouter);
 const logoutRouter = require("./routes/logout");
 app.use("/logout", logoutRouter);
 
+const googleAuthRouter = require("./routes/auth-google");
+app.use("/auth/google", googleAuthRouter);
+
 app.get("/", (req, res) => {
   res.render("home");
 });
