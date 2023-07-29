@@ -1,5 +1,6 @@
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const FacebookStrategy = require("passport-facebook").Strategy;
 
 const User = require("./models/User");
 
@@ -9,6 +10,12 @@ const googleStrategyOptions = {
   clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
   clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
   callbackURL: "http://localhost:3000/auth/google/secrecy",
+};
+
+const facebookStrategyOptions = {
+  clientID: process.env.FACEBOOK_OAUTH_CLIENT_ID,
+  clientSecret: process.env.FACEBOOK_OAUTH_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/facebook/secrecy",
 };
 
 function configPassport(passport) {
@@ -36,12 +43,29 @@ function configPassport(passport) {
       const user = await User.findOne({ googleID: profile.id });
 
       if (!user) {
-        const createdUser = await User.create({
+        const newUser = await User.create({
           username: profile.displayName,
           googleID: profile.id,
         });
-        console.log(createdUser);
-        done(null, createdUser);
+        done(null, newUser);
+      } else {
+        done(null, user);
+      }
+    } catch (err) {
+      done(err);
+    }
+  };
+
+  const verifyFacebook = async (accessToken, refreshToken, profile, done) => {
+    try {
+      const user = await User.findOne({ facebookID: profile.id });
+
+      if (!user) {
+        const newUser = await User.create({
+          username: profile.displayName,
+          facebookID: profile.id,
+        });
+        done(null, newUser);
       } else {
         done(null, user);
       }
@@ -52,6 +76,7 @@ function configPassport(passport) {
 
   passport.use(new LocalStrategy(verifyLocal));
   passport.use(new GoogleStrategy(googleStrategyOptions, verifyGoogle));
+  passport.use(new FacebookStrategy(facebookStrategyOptions, verifyFacebook));
 
   passport.serializeUser((user, done) => {
     return done(null, user.id);

@@ -43,6 +43,9 @@ app.use("/logout", logoutRouter);
 const googleAuthRouter = require("./routes/auth-google");
 app.use("/auth/google", googleAuthRouter);
 
+const facebookAuthRouter = require("./routes/auth-facebook");
+app.use("/auth/facebook", facebookAuthRouter);
+
 app.get("/", (req, res) => {
   res.render("home");
 });
