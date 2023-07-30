@@ -1,6 +1,7 @@
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
+const TwitterStrategy = require("passport-twitter").Strategy;
 
 const User = require("./models/User");
 
@@ -16,6 +17,12 @@ const facebookStrategyOptions = {
   clientID: process.env.FACEBOOK_OAUTH_CLIENT_ID,
   clientSecret: process.env.FACEBOOK_OAUTH_CLIENT_SECRET,
   callbackURL: "http://localhost:3000/auth/facebook/secrecy",
+};
+
+const twitterStrategyOptions = {
+  consumerKey: process.env.TWITTER_OAUTH1_CLIENT_ID,
+  consumerSecret: process.env.TWITTER_OAUTH1_CLIENT_SECRET,
+  callbackURL: "http://localhost:3000/auth/twitter/secrecy",
 };
 
 function configPassport(passport) {
@@ -74,9 +81,28 @@ function configPassport(passport) {
     }
   };
 
+  const verifyTwitter = async (token, tokenSecret, profile, done) => {
+    try {
+      const user = await User.findOne({ twitterID: profile.id });
+
+      if (!user) {
+        const newUser = await User.create({
+          username: profile.displayName,
+          twitterID: profile.id,
+        });
+        done(null, newUser);
+      } else {
+        done(null, user);
+      }
+    } catch (err) {
+      done(err);
+    }
+  };
+
   passport.use(new LocalStrategy(verifyLocal));
   passport.use(new GoogleStrategy(googleStrategyOptions, verifyGoogle));
   passport.use(new FacebookStrategy(facebookStrategyOptions, verifyFacebook));
+  passport.use(new TwitterStrategy(twitterStrategyOptions, verifyTwitter));
 
   passport.serializeUser((user, done) => {
     return done(null, user.id);

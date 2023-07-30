@@ -46,6 +46,9 @@ app.use("/auth/google", googleAuthRouter);
 const facebookAuthRouter = require("./routes/auth-facebook");
 app.use("/auth/facebook", facebookAuthRouter);
 
+const twitterRouter = require("./routes/auth-twitter");
+app.use("/auth/twitter", twitterRouter);
+
 app.get("/", (req, res) => {
   res.render("home");
 });
