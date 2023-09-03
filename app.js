@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+app.use(express.static("public"));
+
 const session = require("express-session");
 
 app.use(
@@ -36,6 +38,12 @@ app.use("/register", registerRouter);
 
 const secretsRouter = require("./routes/secrets");
 app.use("/secrets", secretsRouter);
+
+const submitRouter = require("./routes/submit");
+app.use("/submit", submitRouter);
+
+const manageSecretsRouter = require("./routes/manage");
+app.use("/manage", manageSecretsRouter);
 
 const logoutRouter = require("./routes/logout");
 app.use("/logout", logoutRouter);

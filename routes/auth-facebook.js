@@ -9,6 +9,7 @@ router.route("/secrecy").get(
   passport.authenticate("facebook", {
     successRedirect: "/secrets",
     failureRedirect: "/login",
+    failureMessage: true,
   })
 );
 

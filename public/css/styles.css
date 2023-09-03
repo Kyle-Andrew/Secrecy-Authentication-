@@ -1,11 +1,14 @@
-
 body {
-  background-color: #E8ECEF;
+  background-color: #e8ecef;
+}
+
+.btn-delete {
+  margin-top: -9px;
 }
 
 .centered {
-    padding-top: 200px;
-    text-align: center;
+  padding-top: 200px;
+  text-align: center;
 }
 
 .secret-text {

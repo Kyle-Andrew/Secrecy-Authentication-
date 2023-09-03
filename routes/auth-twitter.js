@@ -9,6 +9,7 @@ router.route("/secrecy").get(
   passport.authenticate("twitter", {
     successRedirect: "/secrets",
     failureRedirect: "/login",
+    failureMessage: true,
   })
 );
 

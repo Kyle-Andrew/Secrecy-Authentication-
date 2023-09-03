@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-router.route("/").get((req, res) => {
+router.route("/").post((req, res) => {
   req.logout((err) => {
     if (err) {
       res.json({ message: err.message });

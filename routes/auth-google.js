@@ -13,6 +13,7 @@ router.route("/secrecy").get(
   passport.authenticate("google", {
     successRedirect: "/secrets",
     failureRedirect: "/login",
+    failureMessage: true,
   })
 );
 

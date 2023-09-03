@@ -31,13 +31,17 @@ function configPassport(passport) {
       const user = await User.findOne({ username: username });
 
       if (!user) {
-        return done(null, false);
+        return done(null, false, {
+          message: "No user with found with the provided Username.",
+        });
       } else {
         const compareResult = await bcrypt.compare(password, user.password);
         if (compareResult) {
           return done(null, user);
         } else {
-          return done(null, false);
+          return done(null, false, {
+            message: "Username and Password do not match.",
+          });
         }
       }
     } catch (err) {

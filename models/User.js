@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
   googleID: String,
   facebookID: String,
   twitterID: String,
+  secrets: [String],
 });
 
 module.exports = mongoose.model("User", userSchema);

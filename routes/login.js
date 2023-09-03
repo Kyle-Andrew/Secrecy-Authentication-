@@ -11,13 +11,15 @@ router
   .route("/")
 
   .get(allowUnauthenticatedUsers, (req, res) => {
-    res.render("login");
+    const messages = req.session.messages;
+    res.render("login", { messages });
   })
 
   .post(
     passport.authenticate("local", {
       successRedirect: "/secrets",
       failureRedirect: "/login",
+      failureMessage: true,
     })
   );
 
